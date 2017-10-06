@@ -1,0 +1,5 @@
+[all]
+localhost
+
+[all:vars]
+kube_root=/storage/repos/kubernetes
