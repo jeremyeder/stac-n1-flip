@@ -1,11 +1,20 @@
 ---
- - name: start docker service
-   systemd: name=docker state=started enabled=no
+  - debug:
+      msg: "consumer is {{ consumer }} and producer is {{ producer }}"
 
- - name: start kubernetes
-   command: {{ kube_root }}/hack/local-up-cluster.sh
-   #file: state=touch path=/tmp/local-cluster-up
+  - name: start docker service
+    systemd: name=docker state=started enabled=no
 
- - name: start etcd
-   command: etcd
-   #file: state=touch path=/tmp/start_etcd
+  - name: start kubernetes
+#      command: API_HOST=172.18.156.21 API_HOST_IP=172.18.156.21 HOSTNAME_OVERRIDE=172.18.156.21 START_MODE=kubeletonly {{ kube_root }}/hack/local-up-cluster.sh -O
+    file: state=touch path=/tmp/start_kube_on_apiserver
+    when: ansible_default_ipv4.address == producer
+
+  - name: start etcd
+#      command: etcd
+    file: state=touch path=/tmp/start_etcd_on_apiserver
+    when: ansible_default_ipv4.address == producer
+
+  - name: start kubelet
+    file: state=touch path=/tmp/start_kube_on_kubelet
+    when: ansible_default_ipv4.address == consumer

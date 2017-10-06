@@ -1,5 +1,17 @@
-[all]
-localhost
+[all:children]
+apiserver
+kubelet
 
 [all:vars]
-kube_root=/storage/repos/kubernetes
+kube_root=/home/gopath/src/kubernetes
+# producer is the STAC producer, and runs the apiserver and kubelet
+producer=x.y.z.21
+
+#consumer runs the STAC consumer, and runs the kubelet
+consumer=x.y.z.22
+
+[apiserver]
+x.y.z.21
+
+[kubelet]
+x.y.z.22
